@@ -1,29 +1,37 @@
-version: "3.1"
+version: "3.4"
 
 services: 
   adminer: 
     image: adminer
+    container_name: db_admin
     ports: 
       - "8082:8080"
     restart: always
 
   db: 
     environment: 
-       
-        MYSQL_ROOT_PASSWORD: paliroot
-       
+        MYSQL_ROOT_PASSWORD: 1234
         MYSQL_DATABASE: transtour
-       
-        MYSQL_USER: transtourRoot
-       
+        MYSQL_USER: transtourRoot      
         MYSQL_PASSWORD: transtourRoot
     image: "mysql:5.7"
     ports: 
       - "8081:3306"
     restart: always
+    container_name: mysqldb
     volumes: 
       - "db_data:/var/lib/mysql"
       - $HOME/repositories/transtour/db.sql:/db.sql
+
+  wiremock:
+    image: "holomekc/wiremock-gui:latest"
+    container_name: wiremock
+    restart: always
+    ports: 
+      - "8088:8089"
+      - "8084:8088"
+    environment:
+      WIREMOCK_OPTIONS: "--port=8089,--https-port=8088,--max-request-journal=1000,--global-response-templating,--root-dir=/home/wiremock/storage"
 
 volumes: 
   db_data: {}

@@ -1,0 +1,51 @@
+{
+
+    "mappings": [
+    
+    {      
+        "persistent": true,   
+        "request": {
+            "urlPattern": "/v1/travel",           
+            "method": "POST"
+        },
+
+        "response": {
+            "status": 202,
+            "body": "Se regitro viaje, requiere aprovacion",
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        }
+    },
+
+    {
+        
+        "persistent": true,
+        
+        "request": {
+        
+            "urlPattern": "/v1/travel/[0-9]{1,20}",
+            "method": "GET"
+        
+        },
+
+        "response": {
+            "status": 200,
+            "bodyFileName": "travel.json",
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        }
+    }
+
+    ],
+
+    "importOptions": {
+
+        "duplicatePolicy": "IGNORE",
+        
+        "deleteAllNotInImport": false
+        
+    }
+}
+        

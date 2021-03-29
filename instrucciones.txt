@@ -2,5 +2,11 @@
 - segundo ingresar al contenedor transtour_db_1 con las instruccion docker exec -it transtour_db_1 bash
 - Tercero ejecutar el comando mysql -uroot -ppaliroor transtour < db.sql
 - Por ultimo Chequear que los dato se cargaron correctamente ingresando a la siguienter url http://localhost:8082
-
-
+- Para utilizar el wiremock 
+  primero posicionarse dentro de la carpeta files
+  Luego copiar los archivos de la carpeta files con el comando
+  docker cp . wiremock:/home/wiremock/storage/__files/
+  Posteriori ingresar al postman copiar el contenido los archivos archivo travel_mapping.json y boucher.json
+  por medio del metod del metod post a la siguiente url localhost:8088/__admin/mappings/import
+  y luego restartear el servicio con el comando docker restart wiremock.
+  

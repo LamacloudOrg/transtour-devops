@@ -1,0 +1,13 @@
+{
+    "travel_id":1,
+    "chofer":{
+        "nombre":"Juan R",
+        "telefono":"011-89210"
+    },
+    "auto":{
+        "patente":"AA 902 BD",
+        "modelo":"PEUGEOT 206"
+    },
+    "fecha":"2020-03-21",
+    "hora":"11:00"
+}

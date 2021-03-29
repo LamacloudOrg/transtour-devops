@@ -1,0 +1,26 @@
+{
+
+    "mappings": [
+    {
+        "persistent": true,
+        "request": {
+            "urlPattern": "/v1/boucher/[0-9]{1,20}",
+            "method": "GET"
+        },
+        "response": {
+            "status": 200,
+            "bodyFileName": "pdf-test.pdf",
+            "headers": {
+                "Content-Type": "application/pdf"
+            }
+        }
+    }
+
+    ],
+    "importOptions": {
+        "duplicatePolicy": "IGNORE",        
+        "deleteAllNotInImport": false
+        
+    }
+        
+} 
