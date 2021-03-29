@@ -1,0 +1,6 @@
+- primero correr el comando docker-compose up -d para levantar los servicios
+- segundo ingresar al contenedor transtour_db_1 con las instruccion docker exec -it transtour_db_1 bash
+- Tercero ejecutar el comando mysql -uroot -ppaliroor transtour < db.sql
+- Por ultimo Chequear que los dato se cargaron correctamente ingresando a la siguienter url http://localhost:8082
+
+
