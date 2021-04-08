@@ -1,0 +1,31 @@
+{
+
+    "mappings": [
+    
+    {      
+        "persistent": true,   
+        "request": {
+            "urlPattern": "/v1/user/login",           
+            "method": "POST"
+        },
+
+        "response": {
+            "status": 200,
+            "body": "usuario authenticado",
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        }
+    }
+
+    ],
+
+    "importOptions": {
+
+        "duplicatePolicy": "IGNORE",
+        
+        "deleteAllNotInImport": false
+        
+    }
+}
+        

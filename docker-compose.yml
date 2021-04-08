@@ -1,9 +1,11 @@
-version: "3.4"
+version: "3.5"
 
 services: 
   adminer: 
     image: adminer
     container_name: db_admin
+    networks:
+      - local
     ports: 
       - "8082:8080"
     restart: always
@@ -19,6 +21,8 @@ services:
       - "8081:3306"
     restart: always
     container_name: mysqldb
+    networks:
+      - local
     volumes: 
       - "db_data:/var/lib/mysql"
       - $HOME/repositories/transtour/db.sql:/db.sql
@@ -29,10 +33,43 @@ services:
     restart: always
     ports: 
       - "8088:8089"
-      - "8084:8088"
+      - "8084:8089"
+    networks:
+      - local
     environment:
       WIREMOCK_OPTIONS: "--port=8089,--https-port=8088,--max-request-journal=1000,--global-response-templating,--root-dir=/home/wiremock/storage"
 
+  voucher:
+    build: ../transtour-backend-voucher
+    image: voucher_api:1.0
+    container_name: voucher_api
+    restart: always
+    volumes :
+      - "vouchers:/opt/app/pdf"
+    ports: 
+      - "9092:9092"
+    networks:
+      - local
+
+  travel:
+    build: ../transtour-backend
+    image: travel_api:1.0
+    container_name: travel_api
+    restart: always
+    volumes :
+      - "travel:/var/lib/data"
+    ports: 
+      - "9091:9091"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=development"
+    networks:
+      - local
+
 volumes: 
   db_data: {}
+  vouchers: {}
+  travel: {}
 
+networks:
+  local:
+    driver: bridge

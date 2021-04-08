@@ -16,6 +16,24 @@
                 "Content-Type": "application/json"
             }
         }
+    },    {
+        
+        "persistent": true,
+        
+        "request": {
+        
+            "urlPattern": "/v1/travel\\?last=true",
+            "method": "GET"
+        
+        },
+
+        "response": {
+            "status": 200,
+            "bodyFileName": "travel.json",
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        }
     },
 
     {
@@ -37,6 +55,8 @@
             }
         }
     }
+
+
 
     ],
 
