@@ -9,4 +9,9 @@
   Posteriori ingresar al postman copiar el contenido los archivos archivo travel_mapping.json y boucher.json
   por medio del metod del metod post a la siguiente url localhost:8088/__admin/mappings/import
   y luego restartear el servicio con el comando docker restart wiremock.
+
+- Para utlizar el proxy en nginx setear la ip de tu compu en la propert proxy_pass
+  Una prueba de ejemplo seria pegar al proxy http://localhost:9090/v1/vocuher/2 en
+  lugar del micrsoervicio  http://localhost:9092/v1/vocuher/2 y crearia un voucher 
+  pero con la diferencia que el cliente solo vera un punto de acceso.
   

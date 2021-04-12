@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3"
 
 services: 
   adminer: 
@@ -60,10 +60,31 @@ services:
       - "travel:/var/lib/data"
     ports: 
       - "9091:9091"
-    environment:
-      - "SPRING_PROFILES_ACTIVE=development"
     networks:
       - local
+    environment:
+      - "SPRING_PROFILES_ACTIVE=development"
+
+  server:
+    build: ./transtour-server
+    container_name: server_api
+    image: server_api:1.0
+    restart: always
+    networks:
+      - local
+    volumes :
+      - "./transtour-server/log:/var/temp/log_file"
+    depends_on:
+      - voucher
+      - travel
+    networks:
+      - local
+    ports: 
+      - "9090:80"
+    #links:
+     # - voucher
+    #  - travel
+
 
 volumes: 
   db_data: {}
