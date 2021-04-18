@@ -10,7 +10,7 @@ services:
       - "8082:8080"
     restart: always
 
-  db: 
+  mysqldb: 
     environment: 
         MYSQL_ROOT_PASSWORD: 1234
         MYSQL_DATABASE: transtour
@@ -26,6 +26,21 @@ services:
     volumes: 
       - "db_data:/var/lib/mysql"
       - $HOME/repositories/transtour/db.sql:/db.sql
+
+  mongodb: 
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 
+      MONGO_INITDB_DATABASE: transtour
+    image: "mongo"
+    ports: 
+      - "27017:27017"
+    restart: always
+    container_name: mongodb
+    networks:
+      - local
+    volumes: 
+      - $HOME/repositories/transtour/mongo:/data/db
 
   wiremock:
     image: "holomekc/wiremock-gui:latest"
@@ -81,9 +96,9 @@ services:
       - local
     ports: 
       - "9090:80"
-    #links:
-     # - voucher
-    #  - travel
+    links:
+      - voucher
+      - travel
 
 
 volumes: 
