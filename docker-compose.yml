@@ -25,7 +25,7 @@ services:
       - local
     volumes: 
       - "db_data:/var/lib/mysql"
-      - $HOME/repositories/transtour/db.sql:/db.sql
+      - $HOME/repositories/transtour/db.sql:/docker-entrypoint-initdb.d/init.sql
 
   mongodb: 
     environment:
@@ -92,8 +92,6 @@ services:
     depends_on:
       - voucher
       - travel
-    networks:
-      - local
     ports: 
       - "9090:80"
     links:
