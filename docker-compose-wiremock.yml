@@ -1,0 +1,15 @@
+wiremock:
+  image: "holomekc/wiremock-gui:latest"
+  container_name: wiremock
+  restart: always
+  ports:
+    - "8088:8089"
+    - "8084:8089"
+  networks:
+    - local
+  environment:
+    WIREMOCK_OPTIONS: "--port=8089,--https-port=8088,--max-request-journal=1000,--global-response-templating,--root-dir=/home/wiremock/storage"
+
+networks:
+  local:
+    driver: bridge
