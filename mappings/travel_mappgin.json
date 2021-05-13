@@ -13,7 +13,8 @@
             "status": 202,
             "body": "Se regitro viaje, requiere aprovacion",
             "headers": {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*"
             }
         }
     },    {
@@ -31,7 +32,8 @@
             "status": 200,
             "bodyFileName": "travel.json",
             "headers": {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin" : "*"
             }
         }
     },

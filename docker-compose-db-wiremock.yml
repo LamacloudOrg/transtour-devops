@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  mysqldb:
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: transtour
+      MYSQL_USER: transtourRoot
+      MYSQL_PASSWORD: transtourRoot
+    image: "mysql:5.7"
+    ports:
+      - "8081:3306"
+    restart: always
+    container_name: mysqldb
+    networks:
+      - local
+    volumes:
+      - "db_data:/var/lib/mysql"
+      - $HOME/repositories/transtour/db.sql:/docker-entrypoint-initdb.d/init.sql
+
+  mongodb:
+    environment:
+#      MONGO_INITDB_ROOT_USERNAME: root
+#      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: transtour
+    image: "mongo"
+    ports:
+      - "27017:27017"
+    restart: always
+    container_name: mongodb
+    networks:
+      - local
+    volumes:
+      - $HOME/repositories/transtour/mongo:/data/db
+
+  wiremock:
+    image: "holomekc/wiremock-gui:latest"
+    container_name: wiremock
+    restart: always
+    ports:
+      - "8088:8089"
+      - "8084:8089"
+    networks:
+      - local
+    environment:
+      WIREMOCK_OPTIONS: "--port=8089,--https-port=8088,--max-request-journal=1000,--global-response-templating,--root-dir=/home/wiremock/storage"
+
+volumes:
+  db_data: {}
+  vouchers: {}
+  travel: {}
+
+networks:
+  local:
+    driver: bridge
