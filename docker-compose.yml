@@ -1,96 +1,161 @@
 version: "3"
 
-services: 
-  adminer: 
-    image: adminer
-    container_name: db_admin
-    networks:
-      - local
-    ports: 
-      - "8082:8080"
-    restart: always
-
-  mysqldb: 
-    environment: 
-        MYSQL_ROOT_PASSWORD: 1234
-        MYSQL_DATABASE: transtour
-        MYSQL_USER: transtourRoot      
-        MYSQL_PASSWORD: transtourRoot
+services:
+  mysqldb:
+    environment:
+      MYSQL_ROOT_PASSWORD : _#891_
+      MYSQL_DATABASE: transtour
+      MYSQL_USER: transtourRoot
+      MYSQL_PASSWORD: transtourRoot
     image: "mysql:5.7"
-    ports: 
-      - "8081:3306"
+    ports:
+      - "3306:3306"
     restart: always
     container_name: mysqldb
     networks:
       - local
-    volumes: 
+    volumes:
       - "db_data:/var/lib/mysql"
-      - $HOME/repositories/transtour/db.sql:/docker-entrypoint-initdb.d/init.sql
+      #- ./transtour-server/mysql-seed/init:/docker-entrypoint-initdb.d/init_user.db
+      #- ./transtour-server/mysql-seed/roles/init:/docker-entrypoint-initdb.d/init_roles.db
+      #- ./transtour-server/mysql-seed/user-role/init:/docker-entrypoint-initdb.d/init_user_role.db
+    hostname: mysql-host
 
-  mongodb: 
+  mongodb:
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 
+      #MONGO_INITDB_ROOT_USERNAME: root
+      #MONGO_INITDB_ROOT_PASSWORD: _root_
       MONGO_INITDB_DATABASE: transtour
     image: "mongo"
-    ports: 
+    ports:
       - "27017:27017"
     restart: always
     container_name: mongodb
+    environment:
+      - "TZ=America/Buenos_Aires"
     networks:
       - local
-    volumes: 
-      - $HOME/repositories/transtour/mongo:/data/db
+    volumes:
+      - "db_mongo:/data/db"
+    hostname: mongo-host
+
+  #mongo-seed:
+  #  build: ./transtour-server/mongo-seed
+  #  links:
+  #    - mongodb
+  #  depends_on:
+  #      - mongodb
+
+  eureka-server:
+    build: ../transtour-backend-eureka-server
+    image: registry.digitalocean.com/transtour-registry/euraka-server:1.0
+    container_name: eureka-server
+    restart: always
+    ports:
+      - "8761:8761"
+    networks:
+      - local
+    depends_on:
+      - mysqldb
+      - mongodb
+    hostname: eureka-server
+    environment:
+      SLEEP_LENGTH: 100
+
+
+  zuul-proxy:
+    build: ../transtour-backend-zul-proxy
+    image: registry.digitalocean.com/transtour-registry/zuul-proxy:1.0
+    container_name: zuul-proxy
+    restart: always
+    ports:
+      - 8080:8080
+    #  - 443:443
+    networks:
+      - local
+    depends_on:
+      - eureka-server
+    hostname: zuul-host
+
+
+  user:
+    build: ../transtour-backend-user
+    image: registry.digitalocean.com/transtour-registry/user_api:1.0
+    container_name: user-api
+    restart: always
+    #  ports:
+    #    - "9092:9092"
+    networks:
+      - local
+    depends_on:
+      - zuul-proxy
 
   voucher:
     build: ../transtour-backend-voucher
-    image: voucher_api:1.0
+    image: registry.digitalocean.com/transtour-registry/voucher_api:1.0
     container_name: voucher_api
     restart: always
-    volumes :
-      - "vouchers:/opt/app/pdf"
-    ports: 
-      - "9092:9092"
+    command: "/bin/bash -c sleep 1;"
+  #  ports:
+  #    - "9092:9092"
     networks:
       - local
+    depends_on:
+      - zuul-proxy
+    environment:
+      SLEEP_LENGTH: 1
 
   travel:
-    build: ../transtour-backend
-    image: travel_api:1.0
+    build: ../transtour-backend-travel
+    image: registry.digitalocean.com/transtour-registry/travel_api:1.0
     container_name: travel_api
     restart: always
-    volumes :
-      - "travel:/var/lib/data"
-    ports: 
-      - "9091:9091"
+    expose:
+      - 80
+      - 443
+#ç    volumes :
+#      - "travel:/var/lib/data"
+#    ports:
+#      - "9091:9091"
     networks:
       - local
-    environment:
-      - "SPRING_PROFILES_ACTIVE=development"
-
-  server:
-    build: ./transtour-server
-    container_name: server_api
-    image: server_api:1.0
-    restart: always
-    networks:
-      - local
-    volumes :
-      - "./transtour-server/log:/var/temp/log_file"
+#    environment:
+#      - "SPRING_PROFILES_ACTIVE=development"
     depends_on:
-      - voucher
-      - travel
-    ports: 
-      - "9090:80"
-    links:
-      - voucher
-      - travel
+      - zuul-proxy
+
+  notfication:
+    build: ../transtour-backend-notifications
+    image: registry.digitalocean.com/transtour-registry/notification:1.0
+    container_name: notification-api
+    restart: always
+    expose:
+      - 80
+      - 443
+    networks:
+      - local
+    depends_on:
+      - zuul-proxy
+
+  front-api:
+    build: ../transtour-front
+    image: registry.digitalocean.com/transtour-registry/front_api:1.0
+    container_name: front-api
+    restart: always
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - local
 
 
-volumes: 
+
+volumes:
   db_data: {}
-  vouchers: {}
-  travel: {}
+  db_mongo: {}
 
 networks:
   local:
