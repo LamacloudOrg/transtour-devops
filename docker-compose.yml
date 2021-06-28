@@ -21,6 +21,27 @@ services:
       #- ./transtour-server/mysql-seed/user-role/init:/docker-entrypoint-initdb.d/init_user_role.db
     hostname: mysql-host
 
+  mysqldb-notification:
+    environment:
+      MYSQL_ROOT_PASSWORD : _#891_
+      MYSQL_DATABASE: transtour
+      MYSQL_USER: transtourRoot
+      MYSQL_PASSWORD: transtourRoot
+    image: "mysql:5.7"
+    ports:
+      - "3307:3306"
+    restart: always
+    container_name: mysqldb-notification
+    networks:
+      - local
+    volumes:
+      - "db_data:/var/lib/mysql"
+      #- ./transtour-server/mysql-seed/init:/docker-entrypoint-initdb.d/init_user.db
+      #- ./transtour-server/mysql-seed/roles/init:/docker-entrypoint-initdb.d/init_roles.db
+      #- ./transtour-server/mysql-seed/user-role/init:/docker-entrypoint-initdb.d/init_user_role.db
+    hostname: mysqldb-notification
+
+
   mongodb:
     environment:
       #MONGO_INITDB_ROOT_USERNAME: root
